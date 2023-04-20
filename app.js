@@ -210,7 +210,7 @@ carritoController.agregarYMostrarCarrito()
 carritoController.totalCarrito()
 carritoController.eliminarDeCarrito()
 carritoController.obtenerDeJson()
-// carritoController.obtenerDeJson()
+
 
 
 
