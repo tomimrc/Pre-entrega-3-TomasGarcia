@@ -2,7 +2,7 @@
 let cardExistente
 let totalProducto
 let reducir = 0
-let zapatillaEnJson = ""
+
 
 class Zapatilla{
     constructor(){
@@ -48,13 +48,13 @@ agregarYMostrarCarrito() {
     const boton = document.getElementById(`boton${element.id}`);
     boton.addEventListener("click", () => {
         this.listaCarrito.push(element);
-        this.pasarAJson()
         this.listaCarrito.forEach((element) => {
+            cardExistente = document.getElementById(`carrito${element.id}`);
             
-        cardExistente = document.getElementById(`carrito${element.id}`);
         });
         if (cardExistente) {
             element.k++
+            
         const cantidad = cardExistente.querySelector(".cantidad");
         cantidad.innerText = `Cantidad: ${element.k}`
         } else {
@@ -70,60 +70,88 @@ agregarYMostrarCarrito() {
                                 </div>
                                 `;
         }
+        this.pasarAJson()
     });
     });
     }
 
-    pasarAJson(){
-    
-        zapatillaEnJson = JSON.stringify(this.listaCarrito) + zapatillaEnJson
-            localStorage.setItem("zapatillas",zapatillaEnJson)
-
-    }
+    // obtenerDeJson(){
+    //     if (localStorage.getItem("zapatillas")){
+    //         let listaCarritoEnJson = localStorage.getItem("zapatillas")
+    //         this.listaCarrito = JSON.parse(listaCarritoEnJson)
+    //         this.listaCarrito.forEach((element) => {
+    //             cardExistente = document.getElementById(`carrito${element.id}`);
+    //             if (cardExistente) {
+    //                 element.k++
+                    
+    //             const cantidad = cardExistente.querySelector(".cantidad");
+    //             cantidad.innerText = `Cantidad: ${element.k}`
+    //             }else {
+    //                 element.k = 1
+    //                 divCarrito.innerHTML += `
+                                    
+    //                                         <div class="cardCarrito" id="carrito${element.id}">
+    //                                         <img src="${element.img}" alt="Zapatilla ${element.id}">
+    //                                         <h2>${element.nombre}</h2>
+    //                                         <div class ="textos">
+    //                                         <p>Precio $${element.precio}</p>
+    //                                         <p class ="cantidad" id="pCard${element.id}">Cantidad: ${element.k}</p>
+    //                                         </div>
+    //                                         </div>
+    //                                         `;
+    //                 }
+                
+    //         });
+             
+    //         }else{
+    //             this.listaCarrito = []
+    //         }
+    // }
 
     obtenerDeJson(){
-        let enParse = []
-        let getItem = localStorage.getItem("zapatillas")
-        enParse = JSON.parse(getItem)
-        if(enParse.length == 0){
-            console.log("vacio")
-        }else{
-            enParse.forEach(element =>{
-                divCarrito.innerHTML += `
-                        
-                        <div class="cardCarrito" id="carrito${element.id}">
-                        <img src="${element.img}" alt="Zapatilla ${element.id}">
-                        <h2>${element.nombre}</h2>
-                        <div class ="textos">
-                        <p>Precio $${element.precio}</p>
-                        <p class ="cantidad" id="pCard${element.id}">Cantidad: ${element.k}</p>
-                        </div>
-                        </div>
-                        `;
-            })
-        }
-        
-            // if (getItem.length == 0){
-            //     for (let index = 0; index < getItem.length; index++) {
-            //         const element = array[index];
-            //         console.log(element)
+        if (localStorage.getItem("zapatillas")){
+          let listaCarritoEnJson = localStorage.getItem("zapatillas")
+          let listaCarrito = JSON.parse(listaCarritoEnJson)
+          this.listaCarrito = listaCarrito.map((item) => {
+            let zapatilla = zapatillas.listaZapatillas.find((zapatilla) => zapatilla.id === item.id);
+            zapatilla.k = item.k;
+            return zapatilla;
+          });
+          this.listaCarrito.forEach((element) => {
+            cardExistente = document.getElementById(`carrito${element.id}`);
+                if (cardExistente) {
+                    element.k++
                     
-            //     }
-            //     let enParse = JSON.parse(getItem) 
-            //     divCarrito.innerHTML = `
-                        
-            //                     <div class="cardCarrito" id="carrito${enParse.id}">
-            //                     <img src="${enParse.img}" alt="Zapatilla ${enParse.id}">
-            //                     <h2>${enParse.nombre}</h2>
-            //                     <div class ="textos">
-            //                     <p>Precio $${enParse.precio}</p>
-            //                     <p class ="cantidad" id="pCard${enParse.id}">Cantidad: ${enParse.k}</p>
-            //                     </div>
-            //                     </div>
-            //                     `;
-            // }else{console.log("hola")}
+                const cantidad = cardExistente.querySelector(".cantidad");
+                cantidad.innerText = `Cantidad: ${element.k}`
+                }else {
+                    element.k = 1
+                    divCarrito.innerHTML += `
+                                    
+                                            <div class="cardCarrito" id="carrito${element.id}">
+                                            <img src="${element.img}" alt="Zapatilla ${element.id}">
+                                            <h2>${element.nombre}</h2>
+                                            <div class ="textos">
+                                            <p>Precio $${element.precio}</p>
+                                            <p class ="cantidad" id="pCard${element.id}">Cantidad: ${element.k}</p>
+                                            </div>
+                                            </div>
+                                            `;
+                    }
+                
+            
+          });
+        } else {
+          this.listaCarrito = []
+        }
+      }
 
+    pasarAJson(){
+        let zapatillaEnJson = JSON.stringify(this.listaCarrito)
+            localStorage.setItem("zapatillas",zapatillaEnJson)
     }
+
+
 
 totalCarrito(){
     comprar.addEventListener("click",() =>{
@@ -176,10 +204,13 @@ zapatillas.mostrarEnDom()
 
 let carritoController = new Carrito()
 
+
+
 carritoController.agregarYMostrarCarrito()
 carritoController.totalCarrito()
 carritoController.eliminarDeCarrito()
 carritoController.obtenerDeJson()
+// carritoController.obtenerDeJson()
 
 
 
